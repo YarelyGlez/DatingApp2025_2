@@ -14,8 +14,8 @@ import { ToastService } from '../../core/services/toast-service';
 })
 export class MemberProfile implements OnInit, OnDestroy {
   @ViewChild('memberProfileEditForm') memberProfileEditForm?: NgForm;
-  @HostListener('window:beforeunload', ['$event']) notify ($event:BeforeUnloadEvent){
-    if (this.memberProfileEditForm?.dirty){
+  @HostListener('window:beforeunload', ['$event']) notify($event: BeforeUnloadEvent) {
+    if (this.memberProfileEditForm?.dirty) {
       $event.preventDefault();
     }
   }
@@ -33,8 +33,8 @@ export class MemberProfile implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.parent?.data.subscribe(data => {
       this.member.set(data["member"]);
-    });  
-    
+    });
+
     this.editableMember = {
       displayName: this.member()?.displayName || '',
       description: this.member()?.description || '',
@@ -44,20 +44,20 @@ export class MemberProfile implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-      if (this.membersService.editMode()){
-        this.membersService.editMode.set(false);
-      }
+    if (this.membersService.editMode()) {
+      this.membersService.editMode.set(false);
+    }
   }
 
   updateProfile() {
     if (!this.member()) return;
-    const updatedMember = {...this.member(), ...this.editableMember};
-
-    console.group("UPDATE");
-    console.log(updatedMember);
-    console.groupEnd();
-
-    this.toast.success('Profile updated succesfully');
-    this.membersService.editMode.set(false);
+    const updatedMember = { ...this.member(), ...this.editableMember };
+    this.membersService.updateMember(this.editableMember).subscribe({
+      next: () => {
+        this.toast.success('Profile updated succesfully');
+        this.membersService.editMode.set(false);
+        this.memberProfileEditForm?.reset(updatedMember);
+      }
+    });
   }
 }
