@@ -16,9 +16,14 @@ params:query {
 }
 
 headers {
-  Authorization: Bearer {{token}}
+  Authorization: Bearer {{arenitaToken}}
+}
+
+vars:pre-request {
+  arenitaToken: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFyZW5pdGFAdGVzdC5jb20iLCJuYW1laWQiOiJhcmVuaXRhLWlkIiwibmJmIjoxNzczODUzNzM4LCJleHAiOjE3NzQ0NTg1MzgsImlhdCI6MTc3Mzg1MzczOH0.j40MIueJ5VHc_CduPHah40hc2AhDJdRKdrULxrr_035YUUzfoE_BS8d1i8iLDTF7a3zyyU3hb5JwHVn7ueXTpg
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }
