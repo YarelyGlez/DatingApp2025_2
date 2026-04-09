@@ -1,7 +1,7 @@
-using System.Security.Claims;
 using API.DTOs;
 using API.Entities;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using API.Mappers;
 using Microsoft.AspNetCore.Authorization;
@@ -14,9 +14,11 @@ public class MembersController(IMembersRepository membersRepository,
     IPhotoService photoService) : BaseApiController
 {
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<Member>>> GetMembers()
+    public async Task<ActionResult<IReadOnlyList<Member>>> GetMembers([FromQuery] MemberRequest request)
     {
-        return Ok(await membersRepository.GetMembersAsync());
+        request.CurrentMemberId = User.GetMemberId();
+        
+        return Ok(await membersRepository.GetMembersAsync(request));
     }
 
     [HttpGet("{id}")] // https://localhost:5001/api/members/bob-id
@@ -39,8 +41,8 @@ public class MembersController(IMembersRepository membersRepository,
     public async Task<ActionResult> UpdateMember(MemberUpdateRequest request)
     {
         var memberId = User.GetMemberId();
-
         var member = await membersRepository.GetMemberForUpdateAsync(memberId);
+
         if (member == null)
         {
             return BadRequest("Failed to get member");
@@ -100,7 +102,7 @@ public class MembersController(IMembersRepository membersRepository,
             return photo;
         }
 
-        return BadRequest("Somethin went wrong!");
+        return BadRequest("Somehting went wrong!");
     }
 
     [HttpPut("photo/{photoId}")]
