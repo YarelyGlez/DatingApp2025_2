@@ -2,6 +2,8 @@ using API.DTOs;
 using API.Entities;
 using API.Helpers;
 using API.Interfaces;
+using API.Mappers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Data;
 
@@ -13,7 +15,24 @@ public class MessagesRepository(AppDbContext context) : IMessagesRepository
 
     public async Task<Message?> Get(string messageId) => await context.Messages.FindAsync(messageId);
 
-    public async Task<PaginationResult<MessageResponse>> GetForMember()
+    public async Task<PaginationResult<MessageResponse>> GetForMember(MessageParams messageParams)
+    {
+        var query = context.Messages
+            .OrderByDescending(m => m.MessageSent)
+            .AsQueryable();
+        
+        query = messageParams.Container switch
+        {
+            ContainerTypes.Outbox => query.Where(m => m.SenderId == messageParams.MemberId),
+            _ => query.Where(m => m.RecipientId == messageParams.MemberId)
+        };
+
+        var messageQuery = query.Select(MessageMapper.ToResponseProjection());
+
+        return await Pagination.CreateAsync(messageQuery, messageParams.PageNumber, messageParams.PageSize);
+    }
+
+    public Task<PaginationResult<MessageResponse>> GetForMember()
     {
         throw new NotImplementedException();
     }
@@ -24,4 +43,9 @@ public class MessagesRepository(AppDbContext context) : IMessagesRepository
     }
 
     public async Task<bool> SaveAllAsync() => await context.SaveChangesAsync() > 0;
+
+    Task<ActionResult<PaginationResult<MessageResponse>>> IMessagesRepository.GetForMember(MessageParams messageParams)
+    {
+        throw new NotImplementedException();
+    }
 }
