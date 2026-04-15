@@ -3,7 +3,7 @@ using API.Entities;
 using API.Helpers;
 using API.Interfaces;
 using API.Mappers;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Data;
 
@@ -32,20 +32,22 @@ public class MessagesRepository(AppDbContext context) : IMessagesRepository
         return await Pagination.CreateAsync(messageQuery, messageParams.PageNumber, messageParams.PageSize);
     }
 
-    public Task<PaginationResult<MessageResponse>> GetForMember()
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<IReadOnlyList<MessageResponse>> GetThread(string currentMemberId, string recipientId)
     {
-        throw new NotImplementedException();
+        await context.Messages
+            .Where(m => m.RecipientId == currentMemberId
+                && m.SenderId == recipientId
+                && m.DateRead == null)
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(m => m.DateRead, DateTime.UtcNow));
+        
+        return await context.Messages
+            .Where(m => (m.RecipientId == currentMemberId && m.SenderId == recipientId)
+                || (m.RecipientId == recipientId && m.SenderId == currentMemberId))
+            .OrderBy(m => m.MessageSent)
+            .Select(MessageMapper.ToResponseProjection())
+            .ToListAsync();
     }
 
     public async Task<bool> SaveAllAsync() => await context.SaveChangesAsync() > 0;
-
-    Task<ActionResult<PaginationResult<MessageResponse>>> IMessagesRepository.GetForMember(MessageParams messageParams)
-    {
-        throw new NotImplementedException();
-    }
 }
