@@ -57,7 +57,7 @@ export class Messages implements OnInit {
       }
     })
   }
-  
+
   get isInbox() {
     return this.fetchedContainer === 'Inbox';
   }

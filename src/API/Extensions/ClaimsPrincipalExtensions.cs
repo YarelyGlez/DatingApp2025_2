@@ -6,7 +6,7 @@ public static class ClaimsPrincipalExtensions
 {
     public static string GetMemberId(this ClaimsPrincipal user)
     {
-        return user.FindFirstValue(ClaimTypes.NameIdentifier) 
+        return user.FindFirstValue(ClaimTypes.NameIdentifier)
                 ?? throw new ArgumentException("MemberId not available in token");
     }
 }

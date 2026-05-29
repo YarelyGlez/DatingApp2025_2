@@ -40,7 +40,7 @@ public class MessagesController(
         return BadRequest("Failed to send the message");
     }
 
-     [HttpGet]
+    [HttpGet]
     public async Task<ActionResult<PaginationResult<MessageResponse>>> GetMessagesByContainer(
         [FromQuery] MessageParams messageParams)
     {

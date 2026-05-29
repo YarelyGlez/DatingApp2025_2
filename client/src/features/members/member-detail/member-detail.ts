@@ -17,8 +17,8 @@ export class MemberDetail implements OnInit {
   private accountService = inject(AccountService);
   protected membersService = inject(MembersService);
   protected title = signal<string | undefined>("Profile");
-  protected isCurrentUser = computed (() => {
-    return this.accountService.currentUser()?.id == this.route.snapshot.paramMap.get('id');
+  protected isCurrentUser = computed(() => {
+    return this.accountService.currentUser()?.id === this.route.snapshot.paramMap.get('id');
   })
 
   ngOnInit(): void {

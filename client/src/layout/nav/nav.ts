@@ -5,18 +5,19 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ToastService } from '../../core/services/toast-service';
 import { themes } from '../theme';
 import { BusyService } from '../../core/services/busy-service';
+import { HasRole } from '../../shared/directives/has-role';
 
 @Component({
   selector: 'app-nav',
-  imports: [FormsModule, RouterLink, RouterLinkActive],
+  imports: [FormsModule, RouterLink, RouterLinkActive, HasRole],
   templateUrl: './nav.html',
   styleUrl: './nav.css'
 })
 export class Nav implements OnInit {
   private router = inject(Router);
   private toast = inject(ToastService);
-  protected accountService = inject(AccountService);  
-  protected busyServices = inject(BusyService);
+  protected accountService = inject(AccountService);
+  protected busyService = inject(BusyService);
   protected creds: any = {};
   protected selectedTheme = signal<string>(localStorage.getItem("theme") || "light");
   protected themes = themes;

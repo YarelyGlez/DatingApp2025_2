@@ -3,7 +3,7 @@ namespace API.Helpers;
 public class PaginationRequest
 {
     private const int MaxPageSize = 100;
-
+    
     private int _pageNumber;
     public int PageNumber
     {

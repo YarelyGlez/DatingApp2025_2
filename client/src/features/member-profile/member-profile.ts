@@ -15,11 +15,11 @@ import { TimeAgoPipe } from '../../core/pipes/time-ago-pipe';
 })
 export class MemberProfile implements OnInit, OnDestroy {
   @ViewChild('memberProfileEditForm') memberProfileEditForm?: NgForm;
-  @HostListener('window:beforeunload', ['$event']) notify($event: BeforeUnloadEvent) {
+  @HostListener('window:beforeunload', ['$event']) notify ($event:BeforeUnloadEvent) {
     if (this.memberProfileEditForm?.dirty) {
       $event.preventDefault();
     }
-  }
+  };
   private accountService = inject(AccountService);
   private toast = inject(ToastService);
   protected membersService = inject(MembersService);
@@ -47,18 +47,18 @@ export class MemberProfile implements OnInit, OnDestroy {
 
   updateProfile() {
     if (!this.membersService.member()) return;
-    const updatedMember = { ...this.membersService.member(), ...this.editableMember };
+    const updatedMember = {...this.membersService.member(), ...this.editableMember};
     this.membersService.updateMember(this.editableMember).subscribe({
       next: () => {
         const currentUser = this.accountService.currentUser();
-        if (currentUser && updatedMember.displayName !== currentUser?.displayName){
+        if (currentUser && updatedMember.displayName !== currentUser?.displayName) {
           currentUser.displayName = updatedMember.displayName;
           this.accountService.setCurrentUser(currentUser);
         }
         this.membersService.editMode.set(false);
         this.membersService.member.set(updatedMember as Member);
-        this.memberProfileEditForm?.reset(updatedMember);        
-        this.toast.success('Profile updated succesfully');
+        this.memberProfileEditForm?.reset(updatedMember);
+        this.toast.success('Profile updated successfully');
       }
     });
   }

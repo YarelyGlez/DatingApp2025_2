@@ -54,8 +54,6 @@ export class MemberList implements OnInit {
   }
 
   onFilterChange(data: MemberParams) {
-    console.log('Modal submitted data: ', data);
-    this.memberParams = data;
     this.memberParams = {...data};
     this.updatedParams = {...data};
     this.loadMembers();

@@ -44,11 +44,6 @@ public class MembersRepository(AppDbContext context) : IMembersRepository
         return await Pagination.CreateAsync(query, request.PageNumber, request.PageSize);
     }
 
-    public Task<PaginationResult<Member>> GetMembersAsync(MessageParams messageRequest)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<IReadOnlyList<Photo>> GetPhotosAsync(string memberId)
     {
         return await context.Members
@@ -65,10 +60,5 @@ public class MembersRepository(AppDbContext context) : IMembersRepository
     public void Update(Member member)
     {
         context.Entry(member).State = EntityState.Modified;
-    }
-
-    Task<object?> IMembersRepository.GetMembersAsync(MemberRequest request)
-    {
-        throw new NotImplementedException();
     }
 }
