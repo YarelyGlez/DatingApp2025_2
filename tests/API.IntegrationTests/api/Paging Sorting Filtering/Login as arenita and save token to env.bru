@@ -17,20 +17,15 @@ body:json {
   }
 }
 
-script:post-response {
-  const user = res.getBody();
-  
-  test("Has properties", function () {
-      expect(user).to.have.property('username');
-      expect(user).to.have.property('token');
+tests {
+  test("Should be able to login", function() {
+    expect(res.getStatus()).to.equal(200);
   });
   
-  if (test("Has properties")) {
-      bru.setEnvVar('token', user.token);
-  }
+  const data = res.body;
+  bru.setVar('token', data.token);
 }
 
 settings {
   encodeUrl: true
-  timeout: 0
 }
