@@ -55,7 +55,7 @@ public static class Program
         }
         catch (Exception ex)
         {
-            var logger = services.GetRequiredService<ILogger>();
+            var logger = app.Logger;
             logger.LogError(ex, "Migration process failed!");
         }
 
